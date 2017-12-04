@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { connect} from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchWeather } from '../actions/index';
 
-export default class SearchBar extends Component {
+class SearchBar extends Component {
 
 	constructor(props) {
 		super(props);
@@ -8,16 +11,18 @@ export default class SearchBar extends Component {
 		this.state = { term: '' };
 
 		this.onInputChange = this.onInputChange.bind(this);
+		this.onFormSubmit = this.onFormSubmit.bind(this);
 	}
 
 	onInputChange(event) {
-		console.log(event.target.value);
 		this.setState({ term: event.target.value });
 	}
 
 	onFormSubmit(event) {
 		event.preventDefault();
 		// fetch weather data here
+		this.props.fetchWeather(this.state.term);
+		this.setState({ term: '' });
 	}
 
 	render() {
@@ -35,3 +40,17 @@ export default class SearchBar extends Component {
 		);
 	}
 } 
+
+//
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({ fetchWeather }, dispatch);
+
+	// to help Dump Components work easily with Action, the Smart Components prepare
+	// action callbacks through bindActionCreators()
+	//  
+}
+
+// null : state, but now we dont need a state here
+
+export default connect(null, mapDispatchToProps)(SearchBar)
